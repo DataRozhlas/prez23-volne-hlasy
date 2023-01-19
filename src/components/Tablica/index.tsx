@@ -45,7 +45,7 @@ const columns = [
     selector: (row: Row) => {
       const Pavel = Number(row["kand-4"]);
       const Babis = Number(row["kand-7"]);
-      return Pavel > Babis ? "Pavel" : "Babis";
+      return Pavel > Babis ? "Pavel" : "Babiš";
     },
     grow: 1,
     center: true,
@@ -55,8 +55,9 @@ const columns = [
 const paginationComponentOptions = {
   rowsPerPageText: "Obcí na stránku",
   rangeSeparatorText: "z",
-  selectAllRowsItem: true,
+  selectAllRowsItem: false,
   selectAllRowsItemText: "všechny",
+  noRowsPerPage: false,
 };
 
 const customStyles = {

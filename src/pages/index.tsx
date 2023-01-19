@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RangeSlider, TableHlasy, Tablica } from "../components";
 import { tsvParse, dsvFormat } from "d3-dsv";
 import { usePostMessageWithHeight } from "../hooks";
+import elementResizeEvent from "element-resize-event";
 
 const fetchData = async (context: { queryKey: any[] }) => {
   if (context.queryKey[0] === "kandidati") {
@@ -39,14 +40,24 @@ const VolneHlasy = () => {
   const [selectedCandidates, setSelectedCandidates] = useState([
     6, 1, 2, 9, 8, 5,
   ]);
+  const [tableHeight, setTableHeight] = useState(408);
 
   const { containerRef, postHeightMessage } =
     usePostMessageWithHeight("cro-volne-hlasy");
+
+  const table = useRef<HTMLElement | any>(null);
 
   const candidates = useQuery({
     queryKey: ["kandidati", 2023],
     queryFn: fetchData,
   });
+
+  if (table.current) {
+    elementResizeEvent(table.current, function () {
+      setTableHeight(table.current?.clientHeight);
+      console.log(table.current?.clientHeight);
+    });
+  }
 
   const results = useQuery({
     queryKey: ["vysledky", 2023, 1],
@@ -82,14 +93,14 @@ const VolneHlasy = () => {
           };
         })
         .sort((a: any, b: any) => b.result - a.result);
-      console.log(volneHlasy);
+      // console.log(volneHlasy);
       setFinalResult(volneHlasy);
     }
   }, [results.data, selectedCandidates, popLimit]);
 
   useEffect(() => {
     postHeightMessage();
-  }, [finalResult, postHeightMessage]);
+  }, [finalResult, tableHeight, postHeightMessage]);
 
   if (results.isLoading || candidates.isLoading) {
     return (
@@ -147,7 +158,9 @@ const VolneHlasy = () => {
           setPopLimit={setPopLimit}
         ></RangeSlider>
       </div>
-      <Tablica data={finalResult}></Tablica>
+      <div ref={table}>
+        <Tablica data={finalResult}></Tablica>
+      </div>
     </div>
   );
 };

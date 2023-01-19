@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RangeSlider, TableHlasy, Tablica } from "../components";
 import { tsvParse, dsvFormat } from "d3-dsv";
+import { usePostMessageWithHeight } from "../hooks";
 
 const fetchData = async (context: { queryKey: any[] }) => {
   if (context.queryKey[0] === "kandidati") {
@@ -38,6 +39,9 @@ const VolneHlasy = () => {
   const [selectedCandidates, setSelectedCandidates] = useState([
     6, 1, 2, 9, 8, 5,
   ]);
+
+  const { containerRef, postHeightMessage } =
+    usePostMessageWithHeight("cro-volne-hlasy");
 
   const candidates = useQuery({
     queryKey: ["kandidati", 2023],
@@ -83,6 +87,10 @@ const VolneHlasy = () => {
     }
   }, [results.data, selectedCandidates, popLimit]);
 
+  useEffect(() => {
+    postHeightMessage();
+  }, [finalResult, postHeightMessage]);
+
   if (results.isLoading || candidates.isLoading) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -92,7 +100,7 @@ const VolneHlasy = () => {
   }
 
   return (
-    <div>
+    <div className="bg-white" ref={containerRef}>
       <h1 className="text-2xl font-bold leading-6 pb-2">
         Kde „leží na ulici“ nejvíc volných hlasů?
       </h1>
@@ -140,8 +148,6 @@ const VolneHlasy = () => {
         ></RangeSlider>
       </div>
       <Tablica data={finalResult}></Tablica>
-
-      {/* <TableHlasy data={finalResult} year={2023}></TableHlasy> */}
     </div>
   );
 };

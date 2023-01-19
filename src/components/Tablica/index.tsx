@@ -12,42 +12,42 @@ interface Row {
 
 const columns = [
   {
-    name: <p className="font-bold text-center">Obec</p>,
+    name: <div className="coltit">Obec</div>,
     selector: (row: Row) => row.NAZ_OBEC,
     grow: 2,
   },
   {
-    name: <p className="font-bold text-center">Okres</p>,
+    name: <p className="coltit">Okres</p>,
     selector: (row: Row) => row.OKRES,
     grow: 2,
   },
   {
-    name: <p className="font-bold text-center">Nevyužitých hlasů</p>,
+    name: <p className="coltit">Nevyužitých hlasů</p>,
     selector: (row: Row) => row.result,
     format: (row: Row) => row.result.toLocaleString("cs-CZ"),
+    style: { whiteSpace: "unset" },
     sortable: true,
     center: true,
     grow: 1,
   },
   {
-    name: <p className="font-bold text-center">Z oprávněných voličů</p>,
+    name: <p className="coltit">Z oprávněných voličů</p>,
     selector: (row: Row) => Math.round((row.result / row.ZAPSANI_VOLICI) * 100),
     format: (row: Row) =>
       `${Math.round((row.result / row.ZAPSANI_VOLICI) * 100)} %`,
     sortable: true,
     center: true,
     grow: 1,
-    wrap: true,
+    id: "procenta",
   },
   {
-    name: <p className="font-bold text-center">Vítěz 1. kola</p>,
+    name: <p className="coltit">Víc hlasů v 1. kole</p>,
     selector: (row: Row) => {
       const Pavel = Number(row["kand-4"]);
       const Babis = Number(row["kand-7"]);
       return Pavel > Babis ? "Pavel" : "Babis";
     },
     grow: 1,
-    wrap: true,
     center: true,
   },
 ];
@@ -59,6 +59,19 @@ const paginationComponentOptions = {
   selectAllRowsItemText: "všechny",
 };
 
+const customStyles = {
+  headCells: {
+    style: {
+      paddingLeft: "4px",
+      paddingRight: "4px",
+      fontWeight: "800",
+    },
+    draggingStyle: {
+      cursor: "move",
+    },
+  },
+};
+
 const Tablica = (props: any) => {
   return (
     <DataTable
@@ -67,6 +80,7 @@ const Tablica = (props: any) => {
       dense
       pagination
       paginationComponentOptions={paginationComponentOptions}
+      customStyles={customStyles}
     />
   );
 };

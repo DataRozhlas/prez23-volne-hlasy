@@ -3,3 +3,4 @@ export * from "./RangeSlider";
 export * from "./Table";
 export * from "./TableHlasy";
 export * from "./Tablica";
+export * from "./Mapa";

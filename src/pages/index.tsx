@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { RangeSlider, TableHlasy, Tablica } from "../components";
+import { RangeSlider, Tablica, Mapa } from "../components";
 import { tsvParse, dsvFormat } from "d3-dsv";
 import { usePostMessageWithHeight } from "../hooks";
 import elementResizeEvent from "element-resize-event";
@@ -48,10 +48,9 @@ const addOrRemove = (array: number[], value: number) => {
 const VolneHlasy = () => {
   const [popLimit, setPopLimit] = useState(15000);
   const [finalResult, setFinalResult] = useState([]);
-  const [selectedCandidates, setSelectedCandidates] = useState([
-    6, 1, 2, 9, 8, 5,
-  ]);
+  const [selectedCandidates, setSelectedCandidates] = useState([6, 1, 9, 8]);
   const [tableHeight, setTableHeight] = useState(408);
+  const [content, setContent] = useState(" ");
 
   const { containerRef, postHeightMessage } =
     usePostMessageWithHeight("cro-volne-hlasy");
@@ -137,6 +136,8 @@ const VolneHlasy = () => {
       <h1 className="text-2xl font-bold leading-6 pb-2">
         Kde „leží na ulici“ nejvíc volných hlasů?
       </h1>
+      <Mapa setTooltipContent={setContent}></Mapa>
+      <div className="text-right pr-2 h-4">{content}</div>
       <fieldset className="space-y-1">
         <legend className="font-medium text-gray-900">Započítat hlasy</legend>
         {options.map(option => (

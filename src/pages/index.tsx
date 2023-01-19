@@ -5,6 +5,17 @@ import { tsvParse, dsvFormat } from "d3-dsv";
 import { usePostMessageWithHeight } from "../hooks";
 import elementResizeEvent from "element-resize-event";
 
+interface Obec {
+  NAZ_OBEC: string;
+  OKRES: string;
+  result: number;
+  pct: number;
+  ZAPSANI_VOLICI: number;
+  TYP_OBEC: string;
+  "kand-4": string;
+  "kand-7": string;
+}
+
 const fetchData = async (context: { queryKey: any[] }) => {
   if (context.queryKey[0] === "kandidati") {
     const ssv = dsvFormat(";");
@@ -35,7 +46,7 @@ const addOrRemove = (array: number[], value: number) => {
 };
 
 const VolneHlasy = () => {
-  const [popLimit, setPopLimit] = useState(5000);
+  const [popLimit, setPopLimit] = useState(15000);
   const [finalResult, setFinalResult] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState([
     6, 1, 2, 9, 8, 5,
@@ -77,6 +88,7 @@ const VolneHlasy = () => {
   useEffect(() => {
     if (results.data) {
       const volneHlasy: any = results.data
+        .filter(obec => obec.TYP_OBEC !== "MCMO")
         .filter(obec => Number(obec.ZAPSANI_VOLICI) > popLimit)
         .map(obec => {
           return {
@@ -89,6 +101,16 @@ const VolneHlasy = () => {
                 0
               );
               return candidatesVotes;
+            })(),
+            pct: (function () {
+              const candidatesVotes = selectedCandidates.reduce(
+                (acc: number, curr: any) => {
+                  return acc + Number(obec[`kand-${curr}`]);
+                },
+                0
+              );
+              const volici = Number(obec.ZAPSANI_VOLICI);
+              return (candidatesVotes / volici) * 100;
             })(),
           };
         })

@@ -4,6 +4,7 @@ interface Row {
   NAZ_OBEC: string;
   OKRES: string;
   result: number;
+  pct: number;
   ZAPSANI_VOLICI: number;
   TYP_OBEC: string;
   "kand-4": string;
@@ -25,7 +26,6 @@ const columns = [
     name: <p className="coltit">Nevyužitých hlasů</p>,
     selector: (row: Row) => row.result,
     format: (row: Row) => row.result.toLocaleString("cs-CZ"),
-    style: { whiteSpace: "unset" },
     sortable: true,
     center: true,
     grow: 1,
@@ -38,7 +38,6 @@ const columns = [
     sortable: true,
     center: true,
     grow: 1,
-    id: "procenta",
   },
   {
     name: <p className="coltit">Víc hlasů v 1. kole</p>,
@@ -77,11 +76,13 @@ const Tablica = (props: any) => {
   return (
     <DataTable
       columns={columns}
-      data={props.data.filter((obec: Row) => obec.TYP_OBEC !== "MCMO")}
+      data={props.data}
       dense
       pagination
       paginationComponentOptions={paginationComponentOptions}
       customStyles={customStyles}
+      defaultSortFieldId={4}
+      defaultSortAsc={false}
     />
   );
 };

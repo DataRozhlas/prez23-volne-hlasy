@@ -4,20 +4,33 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "production": "aws s3 sync out s3://datarozhlas/volne-hlasy --acl public-read && aws cloudfront create-invalidation --distribution-id E3ABKG4QXPTL3P --paths '/volne-hlasy/*'"
   },
   "dependencies": {
     "@next/font": "13.1.2",
+    "@tanstack/react-query": "^4.22.0",
+    "@tanstack/react-query-devtools": "^4.22.0",
+    "@types/d3-dsv": "^3.0.1",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
+    "d3-dsv": "^3.0.1",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
     "next": "13.1.2",
     "react": "18.2.0",
+    "react-data-table-component": "^7.5.3",
     "react-dom": "18.2.0",
+    "react-is": "^18.2.0",
+    "styled-components": "^5.3.6",
     "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.4"
   }
 }

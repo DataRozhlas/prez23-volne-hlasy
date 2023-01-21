@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RangeSlider, Tablica, Mapa } from "../components";
 import { tsvParse, dsvFormat } from "d3-dsv";
@@ -62,17 +62,17 @@ const VolneHlasy = () => {
     queryFn: fetchData,
   });
 
+  const results = useQuery({
+    queryKey: ["vysledky", 2023, 1],
+    queryFn: fetchData,
+  });
+
   if (table.current) {
     elementResizeEvent(table.current, function () {
       setTableHeight(table.current?.clientHeight);
       console.log(table.current?.clientHeight);
     });
   }
-
-  const results = useQuery({
-    queryKey: ["vysledky", 2023, 1],
-    queryFn: fetchData,
-  });
 
   const options = [
     { id: 6, name: "Danuše Nerudové", description: "777 022 hlasů" },
@@ -84,7 +84,7 @@ const VolneHlasy = () => {
     { id: 0, name: "Nevoličů", description: "2 667 377 hlasů" },
   ];
 
-  useEffect(() => {
+  useMemo(() => {
     if (results.data) {
       const volneHlasy: any = results.data
         .filter(obec => obec.TYP_OBEC !== "MCMO")
@@ -136,8 +136,14 @@ const VolneHlasy = () => {
       <h1 className="text-2xl font-bold leading-6 pb-2">
         Kde „leží na ulici“ nejvíc volných hlasů?
       </h1>
-      <Mapa setTooltipContent={setContent}></Mapa>
-      <div className="text-right pr-2 h-4">{content}</div>
+      <h2 className="leading-4 pb-0">
+        Mapa ukazuje procenta, absolutí počty hlasů jsou dole v tabulce
+      </h2>
+      <Mapa
+        setTooltipContent={setContent}
+        selectedCandidates={selectedCandidates}
+      ></Mapa>
+      <div className="text-right pr-2 h-4 pb-6">{content}</div>
       <fieldset className="space-y-1">
         <legend className="font-medium text-gray-900">Započítat hlasy</legend>
         {options.map(option => (

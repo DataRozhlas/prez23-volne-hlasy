@@ -81,7 +81,7 @@ const Tablica = (props: any) => {
       pagination
       paginationComponentOptions={paginationComponentOptions}
       customStyles={customStyles}
-      defaultSortFieldId={4}
+      defaultSortFieldId={3}
       defaultSortAsc={false}
     />
   );
